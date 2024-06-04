@@ -1,0 +1,13 @@
+<div class="container my-5">
+<h1>Rick and Morty WIKI</h1>
+<hr />
+<input type="text" class="form-control" placeholder="Rick Sanchez..." (input)="filter($event)">
+
+<div class="row">
+    <div *ngFor ="let personaje of personajes" class="col-xl-4 col-sm-6 col-xs-12">
+        <app-card [personaje] = "personaje" >
+            
+        </app-card>
+    </div>
+</div>
+</div>
