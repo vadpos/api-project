@@ -16,13 +16,24 @@ environment
 export class MainPageComponent  {
   personajes: Personaje[]  | undefined;
   personajesCopy: Personaje[] | undefined;
+  pageGlobal: number  = 1;
   constructor(public http: HttpClient) {
-    this.getData();
+    this.getData(this.pageGlobal);
    }
-  async getData() {
-      await this.http.get<any>(environment.apiUrl + '/character')
-      .subscribe((res)=>{
-        this.personajes = res.results.map(({id,name, status, species, image, location, episode}: Personaje) => {
+  async getData(page:number) {
+    if(page === 1){
+      await this.getCharacters("");
+    }
+    else{
+      await this.getCharacters("?page=" + page.toString());
+    }
+     
+  }
+
+  private async getCharacters(page?: string) {
+    await this.http.get<any>(environment.apiUrl + '/character' + page)
+      .subscribe((res) => {
+        this.personajes = res.results.map(({ id, name, status, species, image, location, episode }: Personaje) => {
           return {
             id: id,
             name: name,
@@ -31,9 +42,9 @@ export class MainPageComponent  {
             image: image,
             location: location,
             episode: episode
-          }
-        })
-        console.table(res)
+          };
+        });
+        console.table(res);
         this.personajesCopy = this.personajes;
       });
   }
@@ -45,6 +56,16 @@ export class MainPageComponent  {
       return name.toLowerCase().includes(search.toLowerCase());
     })
 
+  }
+  nextPage(){
+    this.pageGlobal += 1;
+    this.getData(this.pageGlobal);
+  }
+  previousPage(){
+    if(this.pageGlobal > 1){
+      this.pageGlobal -= 1;
+    }
+    this.getData(this.pageGlobal);
   }
 
 }
