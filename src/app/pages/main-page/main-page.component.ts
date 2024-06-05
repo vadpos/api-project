@@ -17,6 +17,8 @@ export class MainPageComponent  {
   personajes: Personaje[]  | undefined;
   personajesCopy: Personaje[] | undefined;
   pageGlobal: number  = 1;
+  nextPage: string = "";
+  previousPage: string = "";
   constructor(public http: HttpClient) {
     this.getData(this.pageGlobal);
    }
@@ -33,6 +35,8 @@ export class MainPageComponent  {
   private async getCharacters(page?: string) {
     await this.http.get<any>(environment.apiUrl + '/character' + page)
       .subscribe((res) => {
+        this.nextPage = res.info.next;
+        this.previousPage = res.info.prev;
         this.personajes = res.results.map(({ id, name, status, species, image, location, episode }: Personaje) => {
           return {
             id: id,
@@ -52,6 +56,10 @@ export class MainPageComponent  {
   private async getCharactersByName(name?: string){
     await this.http.get<any>(environment.apiUrl + '/character?name=' + name)
     .subscribe((res)=>{
+      console.log({res})
+      this.nextPage = res.info.next;
+      this.previousPage = res.info.prev;
+
       this.personajes = res.results.map(({ id, name, status, species, image, location, episode }: Personaje)=>{
         return {
           id: id,
@@ -79,19 +87,55 @@ export class MainPageComponent  {
   async filter(e: any){
     const search: string = e.target.value;
     console.log({search});
-      return  await this.getCharactersByName(search);
+        const res = await this.getCharactersByName(search);
+        console.log({res})
+        return res;
 
 
   }
-  nextPage(){
-    this.pageGlobal += 1;
-    this.getData(this.pageGlobal);
+  goToNextPage(e: any){
+    const search: string = e.target.value;
+   /* if(search){
+      console.log({search})
+      this.getCharactersByName(search);
+    }else{
+      /*this.pageGlobal += 1;
+      this.getData(this.pageGlobal);
+    }*/
+    console.log("inside goToNextPage")
+    this.simpleHttpCall(this.nextPage);
+
   }
-  previousPage(){
-    if(this.pageGlobal > 1){
+
+  async simpleHttpCall(url: string){
+     await this.http.get<any>(url).subscribe((res)=>{
+
+      this.nextPage = res.info.next;
+      this.previousPage = res.info.prev;
+
+      //control if nextPage or previousPage is null
+      this.personajes = res.results.map(({ id, name, status, species, image, location, episode }: Personaje)=>{
+        return {
+          id: id,
+          name: name,
+          status: status,
+          species: species,
+          image: image,
+          location: location,
+          episode: episode
+        }
+      });
+      this.personajesCopy = this.personajes;
+    })
+  }
+
+  goToPreviousPage(e: any){
+    /*if(this.pageGlobal > 1){
       this.pageGlobal -= 1;
     }
     this.getData(this.pageGlobal);
+    */
+    this.simpleHttpCall(this.previousPage);
   }
 
 }

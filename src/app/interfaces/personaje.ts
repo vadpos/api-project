@@ -8,4 +8,5 @@ export interface Personaje{
     image:string;
     location: string;
     episode: Episode[];
+    pages: string;
 }
