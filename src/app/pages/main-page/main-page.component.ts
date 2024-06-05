@@ -49,12 +49,38 @@ export class MainPageComponent  {
       });
   }
 
-  filter(e: any){
+  private async getCharactersByName(name?: string){
+    await this.http.get<any>(environment.apiUrl + '/character?name=' + name)
+    .subscribe((res)=>{
+      this.personajes = res.results.map(({ id, name, status, species, image, location, episode }: Personaje)=>{
+        return {
+          id: id,
+          name: name,
+          status: status,
+          species: species,
+          image: image,
+          location: location,
+          episode: episode
+        }
+      });
+      this.personajesCopy = this.personajes;
+    })
+  }
+
+  filter2(e: any){
     const search: string = e.target.value;
     console.log({search});
     this.personajes = this.personajesCopy?.filter(({name}: Personaje)=>{
       return name.toLowerCase().includes(search.toLowerCase());
     })
+
+  }
+
+  async filter(e: any){
+    const search: string = e.target.value;
+    console.log({search});
+      return  await this.getCharactersByName(search);
+
 
   }
   nextPage(){
