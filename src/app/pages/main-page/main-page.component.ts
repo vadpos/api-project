@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Personaje } from '../../interfaces/personaje';
 import { CardComponent } from "../../components/card/card.component";
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule, NgFor, NgClass } from '@angular/common';
 //import { environment } from '../../../environments/environment';
 environment
 @Component({
@@ -11,7 +11,7 @@ environment
     standalone: true,
     templateUrl: './main-page.component.html',
     styles: ``,
-    imports: [CardComponent, NgFor]
+    imports: [CardComponent, NgFor, NgClass]
 })
 export class MainPageComponent  {
   personajes: Personaje[]  | undefined;
@@ -93,18 +93,12 @@ export class MainPageComponent  {
 
 
   }
-  goToNextPage(e: any){
-    const search: string = e.target.value;
-   /* if(search){
-      console.log({search})
-      this.getCharactersByName(search);
-    }else{
-      /*this.pageGlobal += 1;
-      this.getData(this.pageGlobal);
-    }*/
-    console.log("inside goToNextPage")
+  goToNextPage(){
     this.simpleHttpCall(this.nextPage);
 
+  }
+  goToPreviousPage(){
+    this.simpleHttpCall(this.previousPage);
   }
 
   async simpleHttpCall(url: string){
@@ -113,7 +107,7 @@ export class MainPageComponent  {
       this.nextPage = res.info.next;
       this.previousPage = res.info.prev;
 
-      //control if nextPage or previousPage is null
+    
       this.personajes = res.results.map(({ id, name, status, species, image, location, episode }: Personaje)=>{
         return {
           id: id,
@@ -129,13 +123,5 @@ export class MainPageComponent  {
     })
   }
 
-  goToPreviousPage(e: any){
-    /*if(this.pageGlobal > 1){
-      this.pageGlobal -= 1;
-    }
-    this.getData(this.pageGlobal);
-    */
-    this.simpleHttpCall(this.previousPage);
-  }
 
 }

@@ -5,14 +5,21 @@
 
 <div class="row">
     <div *ngFor ="let personaje of personajes" class="col-xl-4 col-sm-6 col-xs-12">
-        <app-card [personaje] = "personaje" >
-            
-        </app-card>
+        @defer{
+            <app-card [personaje] = "personaje" />
+        } @placeholder {
+            <div>.</div>
+        }
+        @loading {
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+          }      
     </div>
 </div>
 <div class = "mx-auto" style="width: 200px;">
-    <button (click)='goToPreviousPage($event)'>Previous</button>
-    <button (click)='goToNextPage($event)'>Next</button>
+    <button (click)='goToPreviousPage()' [disabled]="!previousPage" [ngClass]="{'myclass': previousPage, 'myclass2':!previousPage}">Previous</button>
+    <button (click)='goToNextPage()' [disabled]="!nextPage">Next</button>
 </div>
 
 </div>

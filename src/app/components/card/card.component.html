@@ -19,10 +19,16 @@
          {{sumChars(a)}}
                     test{{showText()}}
         </div>-->
-        <span *ngIf="isShown">
-    
+   <!--     <span *ngIf="isShown">
             {{sumChars(personaje)}}
-        </span>
+        </span> -->
+
+        @if(isShown){
+            {{sumChars(personaje)}}
+        }@else {
+
+        }
+
         
 
         <a href="#" class="btn btn-primary">Go somewhere</a>
